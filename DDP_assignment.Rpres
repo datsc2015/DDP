@@ -1,0 +1,94 @@
+DDP Assignment- Rstudio Presentation
+========================================================
+author: GW
+date: 8/28/2016
+autosize: true
+
+The power of t-test: introduction
+========================================================
+
+Power of a test refers to the probability of rejecting the null hypothesis when it is not correct.
+
+- This Rshiny is used for power and sample size calculation
+- Required parameters: Delta, Sample size (n)
+- Required packages: "pwr" or "powerSurvEpi"
+
+
+The power of t-test: inputs
+========================================================
+Select Delta and Sample Size: http://127.0.0.1:5151/
+```{r, echo=FALSE}
+library(shiny)
+shinyUI(fluidPage(
+  
+  # Application title
+  titlePanel("Power of t-test"),
+  
+  # Sidebar with a slider input for Delta and Sample Size (n)
+  sidebarLayout(
+    sidebarPanel(
+       sliderInput("Delta",
+                   "Delta:",
+                   min = 0,
+                   max = 1,
+                   value = 0.8),
+       
+      sliderInput("ssize",
+                  "Sample Size(n):",
+                  min = 2,
+                  max = 100,
+                  value =20)
+    ),
+    # Show a plot of the power distribution with selected Delta
+    mainPanel(
+       plotOutput("distPlot")
+    )
+  )
+))
+
+```
+
+The power of t-test: Summary (Delta=1)
+========================================================
+```{r, echo=FALSE}
+nvals <- seq(2,100,length.out = 99)
+powvals <- sapply(nvals, function (x) power.t.test(n=x, delta=1)$power)
+pv <- as.data.frame(t(rbind(nvals,powvals)))
+
+head(pv)
+
+```
+***
+```{r, echo=FALSE}
+tail(pv)
+
+```
+
+Plot of power curve (Delta=1)
+========================================================
+
+```{r, echo=FALSE}
+ssize =20
+plot(pv$nvals, pv$powvals, ylim=c(0:1),xlab="Sample Size (n)", ylab="Power",main="Power curve of t-test (Delta=1, n=20)", lwd=2.5,col="blue",type="l")
+#Power of specified Sample Size(n)
+abline(v=ssize,col="red", lwd=1.8, lty=2)
+abline(h=pv$powvals[pv$nvals==ssize],col="red", lwd=1.8, lty=2)
+text(ssize-3,pv$powvals[pv$nvals==ssize]+0.04,formatC(pv$powvals[pv$nvals==ssize],digits=3))
+
+```
+
+***
+
+```{r, echo=FALSE}
+ssize1 =50
+plot(pv$nvals, pv$powvals, ylim=c(0:1),xlab="Sample Size (n)", ylab="Power",main="Power curve of t-test(Delta=1, n=50)", lwd=2.5,col="blue",type="l")
+#Power of specified Sample Size(n)
+abline(v=ssize1,col="red", lwd=1.8, lty=2)
+abline(h=pv$powvals[pv$nvals==ssize1],col="red", lwd=1.8, lty=2)
+text(ssize1-3,pv$powvals[pv$nvals==ssize1]+0.04,formatC(pv$powvals[pv$nvals==ssize1],digits=3))
+
+```
+
+
+
+
