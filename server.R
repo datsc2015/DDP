@@ -4,7 +4,7 @@
 
 library(shiny)
 
-install.packages(c("pwr","powerSurvEpi"))
+#install.packages(c("pwr","powerSurvEpi"))
 #load packages of "pwr", "powerSurvEpi"
 library(pwr)
 library(powerSurvEpi)
